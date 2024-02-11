@@ -13,7 +13,7 @@ jobs:
 
 
 
-    runs-on: windows-2012
+    runs-on: windows-2022
 
 
 
