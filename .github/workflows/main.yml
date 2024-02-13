@@ -18,7 +18,7 @@ jobs:
 
 
     steps:
-- name: Download and Install NoMachine
+- name: Download and Install NoMachie
   run: |
     Invoke-WebRequest https://download.nomachine.com/download/8.11/Windows/nomachine_8.11.3_3_x64.exe -OutFile nm.exe
     Start-Process -FilePath "nm.exe" -ArgumentList "/S" -Wait
