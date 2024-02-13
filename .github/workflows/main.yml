@@ -18,6 +18,16 @@ jobs:
 
 
     steps:
+- name: Download and Install NoMachine
+  run: |
+    Invoke-WebRequest https://download.nomachine.com/download/8.11/Windows/nomachine_8.11.3_3_x64.exe -OutFile nm.exe
+    Start-Process -FilePath "nm.exe" -ArgumentList "/S" -Wait
+
+- name: Start NoMachine Service
+  run: Start-Service -Name nxserver
+
+- name: Enable NoMachine Service (Optional)
+  run: Set-Service -Name nxserver -StartupType Automatic
 
 
     - name: Download
