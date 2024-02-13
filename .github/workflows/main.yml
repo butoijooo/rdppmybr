@@ -1,68 +1,53 @@
 name: CI
 
-
-
 on: [push, workflow_dispatch]
-
-
 
 jobs:
 
-
   build:
-
-
 
     runs-on: windows-2022
 
-
-
     steps:
 
-
-    - name: Download
-
+    - name: Download Ngrok
 
       run: Invoke-WebRequest https://bin.equinox.io/c/bNyj1mQVY4c/ngrok-v3-stable-windows-amd64.zip -OutFile ngrok.zip
 
-
-    - name: Extract
-
+    - name: Extract Ngrok
 
       run: Expand-Archive ngrok.zip
 
+    - name: Download NoMachine
 
-    - name: Auth
+      run: Invoke-WebRequest https://download.nomachine.com/download/7.6/Windows/nomachine_7.6.2_4.exe -OutFile nomachine.exe
 
+    - name: Install NoMachine
+
+      run: .\nomachine.exe /S
+
+    - name: Auth Ngrok
 
       run: .\ngrok\ngrok.exe authtoken $Env:NGROK_AUTH_TOKEN
 
-
       env:
-
 
         NGROK_AUTH_TOKEN: ${{ secrets.NGROK_AUTH_TOKEN }}
 
-
     - name: Enable TS
 
-
-      run: Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server'-name "fDenyTSConnections" -Value 0
-
+      run: Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server' -Name "fDenyTSConnections" -Value 0
 
     - run: Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
 
-
-    - run: Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp' -name "UserAuthentication" -Value 1
-
+    - run: Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp' -Name "UserAuthentication" -Value 1
 
     - run: Set-LocalUser -Name "runneradmin" -Password (ConvertTo-SecureString -AsPlainText "P@ssw0rd!" -Force)
 
-
-    - name: Create Tunnel
-
+    - name: Create Ngrok Tunnel
 
       run: .\ngrok\ngrok.exe tcp 3389
 
+    - name: Start NoMachine
 
-
+      run: .\Program Files (x86)\NoMachine\bin\nxserver.exe
